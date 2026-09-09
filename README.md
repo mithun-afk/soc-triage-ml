@@ -29,7 +29,7 @@ Ensure you have Python 3.x installed along with the following packages:
 pip install flask pandas numpy xgboost scikit-learn joblib streamlit plotly
 ```
 
-## Project Structure
+## The Project Structure
 
 - `train.py`: The machine learning pipeline script to train the XGBoost model and save encoders.
 - `app.py`: The main Flask application for serving model inferences.
