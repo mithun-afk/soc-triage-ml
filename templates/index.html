@@ -1,0 +1,77 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Enterprise Security Operations Center - Live Triage</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <h2>Core SOC Triage Console</h2>
+        <a href="http://localhost:8501" target="_blank" class="nav-btn">Switch to Engineer Analytics →</a>
+    </div>
+
+    <div class="container">
+        <h3>Live Event Processing Queue</h3>
+        <p>Click an incoming event to trigger the real-time XGBoost triage classifier pipeline.</p>
+        
+        <table class="alert-table">
+            <thead>
+                <tr>
+                    <th>Alert ID</th>
+                    <th>Detector ID</th>
+                    <th>Attack Category</th>
+                    <th>MITRE Technique</th>
+                    <th>AI Evaluation Status</th>
+                </tr>
+            </thead>
+           <tbody>
+    <tr onclick="processAlert(this, '1001', '524', 'LateralMovement', 'T1021')">
+        <td>ALT-1001</td>
+        <td>524</td>
+        <td>LateralMovement</td>
+        <td>T1021</td>
+        <td><span class="badge pending">Ready to Triage</span></td>
+    </tr>
+    <tr onclick="processAlert(this, '1002', '27', 'InitialAccess', 'T1078')">
+        <td>ALT-1002</td>
+        <td>27</td>
+        <td>InitialAccess</td>
+        <td>T1078</td>
+        <td><span class="badge pending">Ready to Triage</span></td>
+    </tr>
+    <!-- This row demonstrates the Auto-Archive / False Positive logic -->
+    <tr onclick="processAlert(this, '1003', '515', 'Discovery', 'T1087')">
+        <td>ALT-1003</td>
+        <td>515</td>
+        <td>Discovery</td>
+        <td>T1087</td>
+        <td><span class="badge pending">Ready to Triage</span></td>
+    </tr>
+</tbody>
+        </table>
+    </div>
+
+    <script>
+        async function processAlert(row, alertId, detectorId, category, mitre) {
+    const response = await fetch('/predict', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({category: category, mitre: mitre, fp_rate: 0.1}) // Add real FP rate here
+    });
+    
+    const result = await response.json();
+    
+    // Find the status cell in the row and update it
+    let statusCell = row.cells[4];
+    statusCell.innerHTML = `<span style="color:${result.color}; font-weight:bold;">${result.status}</span>`;
+    
+    // If it's green (Auto-Archived), fade the row out
+    if (result.color === 'green') {
+        row.style.opacity = "0.3";
+    }
+}
+    </script>
+</body>
+</html>

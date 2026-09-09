@@ -1,0 +1,26 @@
+# Data files (Ignore large datasets to prevent GitHub push errors)
+*.csv
+
+# Machine learning models and encoders
+*.pkl
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
